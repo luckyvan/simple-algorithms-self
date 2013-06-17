@@ -10,4 +10,6 @@ Anyone are welcome to use, critisize the source code. If you find bugs and are n
 
  It includes a collection of source codes from books I read, and some solutions to the quizes from those books.
 
+ - List: [Aus99], [Sed98]
+
   
