@@ -1,28 +1,67 @@
 #ifndef MY_DLIST
 #define MY_DLIST
-#include "DLink.h"
 #include <cstddef>
 #include <iterator>
 
 using namespace std;
 
 namespace MyList{
+	//Link
+	/* *
+	 * DList node base without Element Info.
+	 * */
+	struct _DLink_base{
+		_DLink_base* next;
+		_DLink_base* prev;
+	};
+	
+	/* *
+	 * DList node use free element list to reduce memory allocation
+	 * */
+	template <class _Elem> 
+		class _DLink: public _DLink_base{
+			typedef _DLink<_Elem> link_type;
+	
+			private:
+				static link_type* freelist; //Head of free link list
+			public:
+				_Elem element;
+		
+				void* operator new(size_t){
+					if(freelist == NULL) return ::new link_type();
+					link_type* temp = freelist;
+					freelist = (link_type*)freelist->next;
+					return temp;
+				}
+	
+				void operator delete(void* ptr){
+					((link_type*)ptr)->next = freelist;
+					freelist = (link_type*)ptr;
+				}
+		};
+		
+	
+	template <class _Elem> 
+		_DLink<_Elem>* _DLink<_Elem>::freelist = NULL;
+	
+	
+	//Iterator
 		struct _DList_iterator_base{
-			_DLink_base* _M_link;
+			_DLink_base* link;
 
 			_DList_iterator_base(){}
 			_DList_iterator_base(_DLink_base*  __x):
-				_M_link(__x){}
+				link(__x){}
 
-			void _M_incr() { _M_link = _M_link->next; }
-			void _M_decr() { _M_link = _M_link->prev; }
+			void _M_incr() { link = link->next; }
+			void _M_decr() { link = link->prev; }
 
 			bool operator==(const _DList_iterator_base& __x) const {
-				return _M_link == __x._M_link;
+				return link == __x.link;
 			}
 
 			bool operator!=(const _DList_iterator_base& __x) const {
-				return _M_link != __x._M_link;
+				return link != __x.link;
 			}
 		};
 
@@ -34,19 +73,19 @@ namespace MyList{
 			typedef _Ref  reference;
 			typedef size_t	size_type;
 			typedef	ptrdiff_t difference_type;
-			typedef bidirectional_iterator_tag iterator_category;
+			typedef bidirectional_iterator_tag iterator_category; //iterator model
 
 			//inner used
 			typedef _DList_iterator<_Elem, _Elem&, _Elem*> iterator;	
 			typedef _DList_iterator<_Elem, const _Elem&, const _Elem*> const_iterator;	
 			typedef _DList_iterator<_Elem, _Ref, _Ptr> _Self;
-			typedef _DLink<_Elem> _Link;
+			typedef _DLink<_Elem> link_type;
 
 			_DList_iterator(_DLink<_Elem>* __x):_DList_iterator_base(__x){}
 			_DList_iterator(){}
-			_DList_iterator(const iterator& __x): _DList_iterator_base(__x._M_link){}
+			_DList_iterator(const iterator& __x): _DList_iterator_base(__x.link){}
 
-			reference operator*() const { return ((_Link*)_M_link)->element;}
+			reference operator*() const { return ((link_type*)link)->element;}
 
 			_Self& operator++(){
 				this->_M_incr();
@@ -58,7 +97,6 @@ namespace MyList{
 				this->_M_incr();
 				return tmp;
 			}
-		    	
 
 			_Self& operator--(){
 				this->_M_decr();
@@ -81,22 +119,23 @@ namespace MyList{
 			typedef ptrdiff_t difference_type;
 			typedef _DList_iterator<Elem, Elem&, Elem*> iterator;
 
-			typedef _DLink<Elem>* _Link;
+			typedef _DLink<Elem> link_type;
+
 			protected:
-			_Link get_node(){
-				return new _DLink<Elem>();	
+			link_type* get_node(){
+				return new link_type();	
 			}
 
-			void put_node(_Link n){
+			void put_node(link_type* n){
 				delete n;
 			}
 
-			_Link create_node(const Elem& elem){
-				_Link n = get_node();
+			link_type* create_node(const Elem& elem){
+				link_type* n = get_node();
 				n->element = elem;
 			}
 
-			void destroy_noda(_Link n){
+			void destroy_noda(link_type* n){
 				put_node(n);
 			}
 
@@ -108,14 +147,14 @@ namespace MyList{
 
 			void transfer(iterator pos, iterator first, iterator last){
 				if(pos != last){
-					(last._M_link)->prev->next = pos._M_link;
-					(first._M_link)->prev->next = last._M_link;
-					pos._M_link->prev->next = first._M_link;
+					(last.link)->prev->next = pos.link;
+					(first.link)->prev->next = last.link;
+					pos.link->prev->next = first.link;
 
-					_DLink_base* tmp = pos._M_link->prev;
-					pos._M_link->prev = last._M_link->prev;
-					last._M_link->prev = first._M_link->prev;
-					first._M_link->prev = tmp;
+					_DLink_base* tmp = pos.link->prev;
+					pos.link->prev = last.link->prev;
+					last.link->prev = first.link->prev;
+					first.link->prev = tmp;
 				}
 			}
 
@@ -140,11 +179,11 @@ namespace MyList{
 			}
 			
 			iterator begin(){
-				return (_Link)node->next;
+				return (link_type*)node->next;
 			}
 
 			iterator end(){
-				return (_Link)node;
+				return (link_type*)node;
 			}
 
 			reference front(){
@@ -167,21 +206,21 @@ namespace MyList{
 			}
 
 			void insert(iterator pos, const Elem& elem){
-				_Link tmp = create_node(elem);
+				link_type* tmp = create_node(elem);
 
-				tmp->next = pos._M_link;
-				tmp->prev = pos._M_link->prev;
-				pos._M_link->prev->next = tmp;
+				tmp->next = pos.link;
+				tmp->prev = pos.link->prev;
+				pos.link->prev->next = tmp;
 
-				pos._M_link->prev= tmp;
+				pos.link->prev= tmp;
 			}
 
 			void erase(iterator pos){
-				_Link next = _Link(pos._M_link->next);
-				_Link prev = _Link(pos._M_link->prev);
+				link_type* next = (link_type*)(pos.link->next);
+				link_type* prev = (link_type*)(pos.link->prev);
 				prev->next = next;
 				next->prev = prev;
-				destroy_node(_Link(pos._M_link));
+				destroy_node((link_type*)(pos.link));
 				return next;
 			}
 
@@ -198,7 +237,7 @@ namespace MyList{
 			}
 
 			void reverse(){
-				if(empty() || _Link(node->next)->next == node) return;
+				if(empty() || (link_type*)(node->next)->next == node) return;
 
 				iterator first = begin();
 				++first; 
