@@ -90,12 +90,14 @@ namespace EOP{
 			return x0;
 		}
 
+
 	template<typename F, typename P, typename D>
 		//requires(Transformation(F) && UnaryPredicate(P) &&
 		//F::domain == P::domain == D)
 		D connection_point(const D& x, F f, P p){
 			D y = collision_point(x, f, p);
 			if(!p(y)) return y;
+			// collision point forwards h+1 step to connection point
 			return _convergent_point(x, f(y), f);
 		}
 

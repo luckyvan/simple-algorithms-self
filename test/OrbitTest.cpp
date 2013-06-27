@@ -7,6 +7,8 @@
 #include <string>
 #include <functional>
 #include <vector>
+#include <cstdlib>
+#include <iostream>
 
 using namespace EOP;
 using namespace MyList;
@@ -25,6 +27,21 @@ template<typename D>
 struct P{
 	bool operator() ( const D& x) const {
 		return x != NULL;
+	}
+};
+
+template<typename D>
+struct Rand{
+	D operator()(D x){
+		srand(x);
+		return rand();
+	}
+};
+
+template<typename D>
+struct True{
+	bool operator() ( const D& x) const {
+		return true;
 	}
 };
 
@@ -90,3 +107,37 @@ OrbitTest::testTerminating()
 	CPPUNIT_ASSERT(!terminating(sl.begin(), F< Link<int>* >(), P< Link<int>* >()));
 	
 }
+
+
+void
+OrbitTest::testRandGenarator()
+{
+
+	std::tuple<size_t, size_t, int> s = 
+		orbit_structure(1, Rand<int>(), True<int>());
+	CPPUNIT_ASSERT_EQUAL(std::get<0>(s) , size_t(12830));
+	CPPUNIT_ASSERT_EQUAL(std::get<1>(s) , size_t(18013));
+	
+	s = orbit_structure(1010101, Rand<int>(), True<int>());
+	CPPUNIT_ASSERT_EQUAL(std::get<0>(s) , size_t(129708));
+	CPPUNIT_ASSERT_EQUAL(std::get<1>(s) , size_t(18013));
+//	int st = 1;
+//	for(int i = 0; i<12830; i++){
+//		srand(st);
+//		st = rand();
+//	}
+//	std::cout << "connection: " << st << std::endl;
+//	for(int i = 0; i<18013; i++){
+//		srand(st);
+//		st = rand();
+//	}
+//	std::cout << "connection-1: " << st << std::endl;
+//	srand(st);
+//	st = rand();
+//	std::cout << "connection: " << st << std::endl;
+//	std::cout << "h: " << std::get<0>(s) << std::endl;
+//	std::cout << "c-1: " << std::get<1>(s) << std::endl;
+	
+	
+}
+
