@@ -8,8 +8,9 @@
 class OrbitTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( OrbitTest );
-    CPPUNIT_TEST(testCollision);
+    CPPUNIT_TEST(testStructure);
     CPPUNIT_TEST(testTerminating);
+    CPPUNIT_TEST(testRandGenarator);
     //CPPUNIT_TEST_EXCEPTION(test_$exception_func, exception);
     CPPUNIT_TEST_SUITE_END();
 
@@ -17,8 +18,9 @@ public:
    void setUp();
    void tearDown();
 
-   void testCollision();
+   void testStructure();
    void testTerminating();
+   void testRandGenarator();
    //void test_$exception_func();
 };
 #endif
