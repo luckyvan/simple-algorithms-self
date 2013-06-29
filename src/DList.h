@@ -1,7 +1,45 @@
+
+/*
+ * =====================================================================================
+ *
+ *       Filename:  DList.h
+ *
+ *    Description:  
+ *    				This file is to develop an double-linked list data structure, which 
+ *    				is the refinement of the following concept:
+ *    				- Front Insertion Sequence
+ *    				    - valid expr: front(), push_front(), pop_front()
+ *    				    - refinement of: Sequence
+ *    				- Back Insertion Sequence
+ *    				    - valid expr: back(), push_back(), pop_back()
+ *    				    - refinement of: Sequence
+ *    				- Sequence
+ *    				    - refinement of: Forward Container, Default Constructible
+ *    				    - valid expr: X(n, t), X(n), X(), X(i, j), a.insert(p, t),
+ *    				        a.insert(p, n, t), a.insert(p, i, j), a.erase(p),
+ *    				        a.erase(p, q)
+ *    				- Forward Container
+ *    				    - refinement of Container
+ *    				- Container
+ *    				    - refinement of Assignable
+ *    				    - valid expr: X(a), X b(a), b = a, a.~X(), a.begin(), a.end(),
+ *    				        a.size(), a.max_size(), a.empty(), a.swap(b)
+ *        Version:  1.0
+ *        Created:  06/29/2013 05:00:00 PM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  fanc
+ *   Organization:  
+ *
+ * =====================================================================================
+ */
+
 #ifndef MY_DLIST
 #define MY_DLIST
 #include <cstddef>
 #include <iterator>
+#include <algorithm>
 
 using namespace std;
 
@@ -215,13 +253,30 @@ namespace MyList{
 				pos.link->prev= tmp;
 			}
 
-			void erase(iterator pos){
+			void insert(iterator pos, size_type n, const Elem& elem){
+				for(; n>0; --n)
+					insert(pos, elem);
+			}
+
+			void insert(iterator pos, iterator first, iterator last){
+				for(; first != last; ++first)
+					insert(pos, *first);
+			}
+
+			iterator erase(iterator pos){
 				link_type* next = (link_type*)(pos.link->next);
 				link_type* prev = (link_type*)(pos.link->prev);
 				prev->next = next;
 				next->prev = prev;
 				destroy_node((link_type*)(pos.link));
 				return next;
+			}
+
+			iterator erase(iterator first, iterator last){
+				while(first != last){
+					erase(first++);
+				}
+				return last;
 			}
 
 			void push_front(const Elem& e){
@@ -234,6 +289,11 @@ namespace MyList{
 
 			void pop_front(){
 				erase(begin());
+			}
+
+			void pop_back(){
+				iterator _temp = end(); //????
+				erase(--_temp);
 			}
 
 			void reverse(){
@@ -249,6 +309,10 @@ namespace MyList{
 			}
 
 			void clear(){}
+
+			void swap(DList& x){
+				std::swap(node, x.node);
+			}
 		};
 
 }

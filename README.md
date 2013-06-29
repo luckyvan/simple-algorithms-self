@@ -10,6 +10,7 @@ Anyone are welcome to use, critisize the source code. If you find bugs and are n
 
  It includes a collection of source codes from books I read, and some solutions to the quizes from those books.
 
- - List: [Aus99], [Sed98]. Bidirectional List with Iterator.
+ - List:  DList.h. [Aus99], [Sed98]. Bidirectional List with Iterator.
+ - Orbit: Orbit.h. [Step09], Elements of Programming. Transformation is a regular function from a type to itself. Starting from a init, application of the transformation again and again forms an orbit.
 
   
