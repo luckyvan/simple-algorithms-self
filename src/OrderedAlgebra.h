@@ -18,6 +18,9 @@
  * =====================================================================================
  */
 
+#ifndef ORDEREDALGEBRA_H
+#define ORDEREDALGEBRA_H
+
 namespace EOP{
 	template <typename T>
 	//requires AchimedeanMonoid(T)
@@ -76,4 +79,4 @@ namespace EOP{
 		}
 	}
 }
-
+#endif

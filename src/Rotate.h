@@ -16,7 +16,13 @@
  *
  * =====================================================================================
  */
+
+#ifndef ROTATE_H
+#define ROTATE_H
+
 #include "OrderedAlgebra.h"
+#include "Swap.h"
+#include <iostream>
 #include <cstddef>
 
 namespace EOP{
@@ -79,5 +85,32 @@ namespace EOP{
 			return rotate_cycles<V>(f, m, l, p);
 		}
 
+ 	template<typename I>
+		//require Mutable(I) && ForwardIterator(I))
+		void rotate_forward_annotated(I f, I m, I l)
+		{
+			// mutable_bounded_range(f, l) && f < m < l
+			size_t a = m - f;
+			size_t b = l - m;
+
+			while (true) {
+				std::pair<I, I> p = swap_ranges_bounded(f, m, m, l);
+				if (p.first == m && p.second == l){
+					//assert(a == b);
+					return;
+				}
+				f = p.first;
+				if(f == m){
+					//assert(b > a);
+					m = p.second;
+					b -= a;
+				}else{
+					//assert(a > b);
+					a -= b;
+				}
+			}
+		}
 
 }
+
+#endif

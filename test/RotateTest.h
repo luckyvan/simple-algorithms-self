@@ -9,7 +9,7 @@ class RotateTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( RotateTest );
     CPPUNIT_TEST(testGCD);
-    CPPUNIT_TEST(testRotateIndex);
+    CPPUNIT_TEST(testRotate);
     //CPPUNIT_TEST_EXCEPTION(test_$exception_func, exception);
     CPPUNIT_TEST_SUITE_END();
 
@@ -18,7 +18,7 @@ public:
    void tearDown();
 
    void testGCD();
-   void testRotateIndex();
+   void testRotate();
    //void test_$exception_func();
 };
 #endif

@@ -35,14 +35,22 @@ RotateTest::testGCD()
 
 
 void
-RotateTest::testRotateIndex()
+RotateTest::testRotate()
 {
 	int array[] = {1, 2, 3, 4, 5, 6, 7};
+	int array1[] = {6, 7, 1, 2, 3, 4, 5};
+	int array2[] = {1, 2, 3, 4, 5, 6, 7};
 	rotate_indexed_nontrivial<int>(array, array+5, array+7);
 
-	for(int i: array){
-		cout << i;
+	for(size_t i = 0; i < 7; i++){
+		CPPUNIT_ASSERT_EQUAL(array[i], array1[i]);
 	}
-	cout << endl;
+
+
+	rotate_forward_annotated<int*>(array, array+2, array+7);
+
+	for(size_t i = 0; i < 7; i++){
+		CPPUNIT_ASSERT_EQUAL(array[i], array2[i]);
+	}
 
 }
