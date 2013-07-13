@@ -1,3 +1,25 @@
+
+/*
+ * =====================================================================================
+ *
+ *       Filename:  Algorithm.h
+ *
+ *    Description:	Basic Algorithms
+ *
+ *        Version:  1.0
+ *        Created:  07/13/2013 09:26:20 PM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  fanc
+ *   Organization: 	family of functions of 
+ *                  - partition
+ *                  - qsort
+ *                  - reverse
+ *                  - heap
+ *
+ * =====================================================================================
+ */
 #include <functional>
 #include <algorithm>
 #include <iostream>
@@ -148,6 +170,7 @@ namespace MyAl{
 			MyAl::reverse(first + s, last);
 
 		}
+
 }
 
 #endif
