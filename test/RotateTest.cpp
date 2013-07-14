@@ -40,14 +40,14 @@ RotateTest::testRotate()
 	int array[] = {1, 2, 3, 4, 5, 6, 7};
 	int array1[] = {6, 7, 1, 2, 3, 4, 5};
 	int array2[] = {1, 2, 3, 4, 5, 6, 7};
-	rotate_indexed_nontrivial<int>(array, array+5, array+7);
+	rotate_indexed_nontrivial(array, array+5, array+7);
 
 	for(size_t i = 0; i < 7; i++){
 		CPPUNIT_ASSERT_EQUAL(array[i], array1[i]);
 	}
 
 
-	rotate_forward_annotated<int*>(array, array+2, array+7);
+	rotate_forward_annotated(array, array+2, array+7);
 
 	for(size_t i = 0; i < 7; i++){
 		CPPUNIT_ASSERT_EQUAL(array[i], array2[i]);
