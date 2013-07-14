@@ -24,15 +24,16 @@
 #include "Swap.h"
 #include <iostream>
 #include <cstddef>
+#include <iterator>
 
 namespace EOP{
-	template<typename V, typename I, typename F>
+	template< typename I, typename F>
 		//require Mutable(I) && Transformation(F) && I == Domain(F) && V == source(I))
 		void cycle_from(I i, F f)
 		{
 			//i under f forms an orbit
 			//for any n, deref(f^n(i)) has definition
-			V tmp = *i;
+			typename std::iterator_traits<I>::value_type tmp = *i;
 			I j = i;
 			I k = f(i);
 			while(k != i){
@@ -65,24 +66,24 @@ namespace EOP{
 
 
 
-	template<typename V, typename I, typename F>
+	template<typename I, typename F>
 		//require Mutable(I) && Transformation(F) && I == Domain(F) && V == source(I))
 		//require IndexedIterator(I)
 		I rotate_cycles(I f, I m, I l, F from)
 		{
 			// precondition m - f >= 0, l - m >= 0
 			size_t d = gcd<size_t>(m - f, l - m);
-			while(d--) cycle_from<V>(f + d, from);
+			while(d--) cycle_from(f + d, from);
 			return f + (l - m);
 		}
 
-	template<typename V, typename I>
+	template<typename I>
 		//require Mutable(I) && V == source(I))
 		//require IndexedIterator(I)
 		I rotate_indexed_nontrivial(I f, I m, I l)
 		{
 			k_rotate_from_permutatin_indexed<I> p(f, m, l);
-			return rotate_cycles<V>(f, m, l, p);
+			return rotate_cycles(f, m, l, p);
 		}
 
  	template<typename I>
